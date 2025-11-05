@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import hr.foi.air.core.LoginToken
+import hr.foi.air.login_username_password.UsernamePasswordLoginHandler
 import hr.foi.air.popapp.navigation.components.EntryPage
 import hr.foi.air.popapp.navigation.components.LoginPage
 import hr.foi.air.popapp.navigation.components.registration.PostRegistrationNotice
@@ -20,6 +21,9 @@ import hr.foi.air.popapp.navigation.components.registration.RegistrationPage
 import hr.foi.air.popapp.ui.theme.POPAppTheme
 
 class MainActivity : ComponentActivity() {
+    private val loginHandlers = listOf(UsernamePasswordLoginHandler())
+    private val currentLoginHandler = loginHandlers[0]
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -38,9 +42,12 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable("login") {
-                            LoginPage({
-                                navController.navigate("entry")
-                            })
+                            LoginPage(
+                                onSuccessfulLogin = {
+                                    navController.navigate("entry")
+                                },
+                                loginHandler = currentLoginHandler
+                            )
                         }
                         composable("register") {
                             RegistrationPage { newUsername ->
