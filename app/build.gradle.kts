@@ -49,7 +49,10 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.material)
+    implementation(libs.androidx.material.icons.extended.android)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.compose.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -59,11 +62,12 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(project(":core"))
     implementation(project(":login_username_password"))
-
+    implementation(project(":ws"))
 
     implementation(libs.okhttp)
     implementation(libs.retrofit)
     implementation(libs.gson)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
+    implementation("androidx.compose.runtime:runtime-livedata:1.7.0")
 }

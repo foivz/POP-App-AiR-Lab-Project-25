@@ -1,4 +1,4 @@
-package hr.foi.air.popapp.network
+package hr.foi.air.ws.network
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -11,8 +11,10 @@ object NetworkService {
     private var instance: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
-//        .client(OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)).build())
+        .client(OkHttpClient.Builder().addInterceptor(HttpLoggingInterceptor().setLevel(
+            HttpLoggingInterceptor.Level.BODY)).build())
         .build()
 
     val authService: AuthenticationService = instance.create(AuthenticationService::class.java)
+    val productsService: ProductsService = instance.create(ProductsService::class.java)
 }

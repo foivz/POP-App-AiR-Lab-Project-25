@@ -23,3 +23,4 @@ rootProject.name = "POPApp"
 include(":app")
 include(":core")
 include(":login_username_password")
+include(":ws")

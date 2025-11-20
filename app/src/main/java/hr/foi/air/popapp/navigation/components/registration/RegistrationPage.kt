@@ -12,12 +12,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import hr.foi.air.popapp.network.NetworkService
-import hr.foi.air.popapp.network.models.RegistrationBody
-import hr.foi.air.popapp.network.models.ResponseBody
+import hr.foi.air.core.network.ResponseListener
+import hr.foi.air.core.network.models.ErrorResponseBody
+import hr.foi.air.core.network.models.ResponseBody
+import hr.foi.air.core.network.models.SuccessfulResponseBody
+import hr.foi.air.ws.models.RegistrationBody
 import hr.foi.air.popapp.ui.components.PasswordTextField
 import hr.foi.air.popapp.ui.components.StyledButton
 import hr.foi.air.popapp.ui.components.StyledTextField
+import hr.foi.air.ws.models.responses.RegisteredUser
+import hr.foi.air.ws.network.NetworkService
+import hr.foi.air.ws.request_handlers.RegistrationRequestHandler
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -95,25 +100,40 @@ fun RegistrationPage(
             onClick = {
                 val requestBody = RegistrationBody(firstName, lastName, username, email, password, "buyer")
 
+                val registrationRequestHandler = RegistrationRequestHandler(requestBody)
+
                 val service = NetworkService.authService
                 val serviceCall = service.registerUser(requestBody)
 
                 isAwaitingResponse = true
 
-                serviceCall.enqueue(object : Callback<ResponseBody> {
-                    override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
-                        if (response.body()?.success == true) {
-                            onSuccessfulRegistration(username)
-                        } else {
-                            errorMessage = "Something went wrong! Check entered data!"
-                        }
+                registrationRequestHandler.sendRequest(object : ResponseListener<RegisteredUser> {
+                    override fun onNetworkFailure(t: Throwable) {
                         isAwaitingResponse = false
+                        errorMessage = "Network error occured, please try again later..."
                     }
 
-                    override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
-                        errorMessage = "Couldn't contact the server..."
+                    override fun onErrorResponse(response: ErrorResponseBody) {
                         isAwaitingResponse = false
+                        errorMessage = response.message + " "
+                        errorMessage += when (response.error_code) {
+                            101 -> "Check username."
+                            102 -> "Username is already used. Please enter another one."
+                            103 -> "Email is invalid."
+                            104 -> "Email entered is already used. Do you already have an account?"
+                            105 -> "Password is invalid. Make sure it has at least 7 characters with at least 1 number."
+                            106 -> "Selected role is invalid!"
+                            107 -> "First name is invalid!"
+                            108 -> "Last name is invalid!"
+                            else -> ""
+                        }
                     }
+
+                    override fun onSuccessfulResponse(response: SuccessfulResponseBody<RegisteredUser>) {
+                        isAwaitingResponse = false
+                        onSuccessfulRegistration(username)
+                    }
+
                 })
             }
         )

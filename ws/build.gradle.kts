@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "hr.foi.air.login_username_password"
+    namespace = "hr.foi.air.ws"
     compileSdk = 36
 
     defaultConfig {
@@ -42,5 +42,10 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(project(":core"))
-    implementation(project(":ws"))
+
+    implementation(libs.okhttp)
+    implementation(libs.retrofit)
+    implementation(libs.gson)
+    implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
 }

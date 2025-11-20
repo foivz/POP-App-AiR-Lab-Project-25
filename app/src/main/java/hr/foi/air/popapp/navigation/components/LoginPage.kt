@@ -12,8 +12,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import hr.foi.air.core.LoginHandler
 import hr.foi.air.core.LoginOutcomeListener
+import hr.foi.air.core.LoginUserData
 import hr.foi.air.login_username_password.UsernamePasswordLoginHandler
 import hr.foi.air.login_username_password.UsernamePasswordLoginToken
+import hr.foi.air.popapp.context.Auth
 import hr.foi.air.popapp.ui.components.PasswordTextField
 import hr.foi.air.popapp.ui.components.StyledButton
 import hr.foi.air.popapp.ui.components.StyledTextField
@@ -69,7 +71,8 @@ fun LoginPage(
                 val usernamePasswordToken = UsernamePasswordLoginToken(username, password)
 
                 loginHandler.handleLogin(usernamePasswordToken, object : LoginOutcomeListener {
-                    override fun onSuccessfulLogin(username: String) {
+                    override fun onSuccessfulLogin(loginUserData: LoginUserData) {
+                        Auth.loggedInUserData = loginUserData
                         onSuccessfulLogin()
                     }
                     override fun onFailedLogin(reason: String) {
@@ -84,5 +87,7 @@ fun LoginPage(
 @Preview
 @Composable
 fun LoginPagePreview() {
-    LoginPage({}, UsernamePasswordLoginHandler())
+    LoginPage({
+
+    }, UsernamePasswordLoginHandler())
 }
