@@ -11,18 +11,18 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ProductsRequestHandler(private val jwt: String) : RequestHandler<Array<Product>> {
-    override fun sendRequest(responseListener: ResponseListener<Array<Product>>) {
+class ProductsRequestHandler(private val jwt: String) : RequestHandler<Product> {
+    override fun sendRequest(responseListener: ResponseListener<Product>) {
         val service = NetworkService.productsService
         val serviceCall = service.getProducts("Bearer $jwt")
 
-        serviceCall.enqueue(object : Callback<SuccessfulResponseBody<Array<Product>>> {
+        serviceCall.enqueue(object : Callback<SuccessfulResponseBody<Product>> {
             override fun onResponse(
-                call: Call<SuccessfulResponseBody<Array<Product>>>,
-                response: Response<SuccessfulResponseBody<Array<Product>>>
+                call: Call<SuccessfulResponseBody<Product>>,
+                response: Response<SuccessfulResponseBody<Product>>
             ) {
                 if (response.isSuccessful) {
-                    val body = response.body() as SuccessfulResponseBody<Array<Product>>
+                    val body = response.body() as SuccessfulResponseBody<Product>
                     responseListener.onSuccessfulResponse(body)
                 } else {
                     val errorResponse = Gson().fromJson(response.errorBody()?.string(),
@@ -30,7 +30,7 @@ class ProductsRequestHandler(private val jwt: String) : RequestHandler<Array<Pro
                     responseListener.onErrorResponse(errorResponse)
                 }
             }
-            override fun onFailure(call: Call<SuccessfulResponseBody<Array<Product>>>, t:
+            override fun onFailure(call: Call<SuccessfulResponseBody<Product>>, t:
             Throwable) {
                 responseListener.onNetworkFailure(t)
             }

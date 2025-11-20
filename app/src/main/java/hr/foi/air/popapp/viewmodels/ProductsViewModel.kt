@@ -1,6 +1,5 @@
 package hr.foi.air.popapp.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,7 +18,7 @@ class ProductsViewModel : ViewModel() {
     init {
         val productsRequestHandler = ProductsRequestHandler(Auth.loggedInUserData!!.jwt)
 
-        productsRequestHandler.sendRequest(object : ResponseListener<Array<Product>> {
+        productsRequestHandler.sendRequest(object : ResponseListener<Product> {
             override fun onNetworkFailure(t: Throwable) {
 
             }
@@ -28,8 +27,8 @@ class ProductsViewModel : ViewModel() {
 
             }
 
-            override fun onSuccessfulResponse(response: SuccessfulResponseBody<Array<Product>>) {
-                TODO("Not yet implemented")
+            override fun onSuccessfulResponse(response: SuccessfulResponseBody<Product>) {
+                _products.value = response.data.toList()
             }
         })
     }
